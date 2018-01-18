@@ -148,6 +148,37 @@ typedef MaplyShapeCylinder WGShapeCylinder;
 
 @end
 
+/** @brief Represents a partial great circle
+    @details Great circles are the shortest distance between two points on a globe. We extended that here a bit, by adding in a percentage. This results in a curved object that stops @ the percentage.
+ */
+@interface MaplyShapePartialGreatCircle : MaplyShape
+
+/// @brief Starting point in geographic coordinates.
+@property (nonatomic,assign) MaplyCoordinate startPt;
+
+/// @brief End point in geographic coordinates
+@property (nonatomic,assign) MaplyCoordinate endPt;
+
+/** @brief Height of the great circle shape right in its middle.
+ @details This is the height of the great circle right in the middle.  It will built toward that height and then go back down as it reaches the endPt.  The height is in display units.  For the globe that's based on a radius of 1.0.
+ */
+@property (nonatomic,assign) float height;
+
+/** @brief Line width for the great circle geometry.
+ @details The great circle is implemented as a set of lines. This is the width, in pixels, of those lines.
+ */
+@property (nonatomic,assign) float lineWidth;
+
+/** @brief Angle between start and end points in radians
+ */
+- (float)calcAngleBetween;
+
+/** @brief How much of the line to draw
+ */
+@property (nonatomic,assign) float percentage;
+
+@end
+
 /** @brief A linear feature offset from the globe.
     @details The main difference between this object and a regular MaplyVectorObject is that you specify coordiantes in 3D.  You can use this to create linear features that are offset from the globe.
   */
