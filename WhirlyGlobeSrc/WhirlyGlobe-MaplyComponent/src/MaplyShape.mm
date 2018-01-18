@@ -138,6 +138,38 @@ using namespace WhirlyKit;
 
 @end
 
+@implementation MaplyShapePartialGreatCircle
+
+- (instancetype)init
+{
+    self = [super init];
+    if (!self)
+        return nil;
+    
+    _lineWidth = 1.0;
+    
+    return self;
+}
+
+- (float)calcAngleBetween
+{
+    Point3f p0 = FakeGeocentricDisplayAdapter::LocalToDisplay(Point3f(_startPt.x,_startPt.y,0.0));
+    Point3f p1 = FakeGeocentricDisplayAdapter::LocalToDisplay(Point3f(_endPt.x,_endPt.y,0.0));
+    
+    float dot = p0.dot(p1);
+    //    Point3f cross = p0.cross(p1);
+    //    float mag = cross.norm();
+    
+    // Note: Atan2 is the correct way, but it's not working right here
+    //    return atan2f(dot, mag);
+    float ret = acosf(dot);
+    if (std::isnan(ret))
+        ret = 0.f;
+    return ret;
+}
+
+@end
+
 @implementation MaplyShapeLinear
 {
     /// Number of coordinates to display in linear

@@ -629,7 +629,7 @@ const DeltaTValue g_DeltaTValues[] =
   { 2459124.00, 71      }, //2020.75
   { 2459763.00, 71      }, //2022.5
   { 2459854.25, 72      }, //2022.75
-  { 2460310.50, 72      }, //2024.0
+  { 2460310.50, 72      } //2024.0
 
 //Note as currently coded there is a single discontinuity of c. 1.87 seconds on 1 January 2024. At this point http://maia.usno.navy.mil/ser7/deltat.preds indicates an error value for DeltaT of about 5 seconds anyway.
 };
