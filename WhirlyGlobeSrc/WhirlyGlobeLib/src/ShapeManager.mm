@@ -443,11 +443,27 @@ static std::vector<Point3f> circleSamples;
         selectManager->addSelectableLinear(super.selectID,_pts,regBuilder->getShapeInfo().minVis,regBuilder->getShapeInfo().maxVis,regBuilder->getShapeInfo().enable);
         sceneRep->selectIDs.insert(super.selectID);
     }
-    
-    regBuilder->addPoints(_pts, theColor, _mbr, _lineWidth, false);
+
+    if (_dashLength > 0 && _gapLength > 0 && _pts.size() > 1)
+    {
+        for (int i=0;i<_pts.size()-1;i++)
+        {
+            if (i%2 == 0)
+                continue;
+            std::vector<Point3f> pts;
+            pts.push_back(_pts[i]);
+            pts.push_back(_pts[i+1]);
+            regBuilder->addPoints(pts, theColor, _mbr, _lineWidth, false);
+        }
+    }
+    else
+    {
+        regBuilder->addPoints(_pts, theColor, _mbr, _lineWidth, false);
+    }
 }
 
 @end
+
 
 @implementation WhirlyKitShapeExtruded
 

@@ -126,6 +126,8 @@ typedef std::set<ShapeSceneRep *,IdentifiableSorter> ShapeSceneRepSet;
 @property (nonatomic,assign) std::vector<WhirlyKit::Point3f> &pts;
 /// Line width in pixels
 @property (nonatomic,assign) float lineWidth;
+/// Dash Pattern
+@property (nonatomic,assign) float dashLength, gapLength;
 
 @end
 

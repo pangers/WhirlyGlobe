@@ -2009,11 +2009,19 @@ public:
             if ([inDesc[kMaplySubdivEpsilon] isKindOfClass:[NSNumber class]])
                 eps = [inDesc[kMaplySubdivEpsilon] floatValue];
             bool isStatic = [inDesc[kMaplySubdivType] isEqualToString:kMaplySubdivStatic];
+            float dashLength = 0;
+            float dashGap = 0;
+            if ([inDesc[kMaplyDashLength] isKindOfClass:[NSNumber class]])
+                dashLength = [inDesc[kMaplyDashLength] floatValue];
+            if ([inDesc[kMaplyDashGap] isKindOfClass:[NSNumber class]])
+                dashGap = [inDesc[kMaplyDashGap] floatValue];
             if (isStatic)
                 SampleGreatCircleStatic(gc.startPt,gc.endPt,gc.height,lin.pts,visualView.coordAdapter,eps, gc.percentage);
             else
                 SampleGreatCircle(gc.startPt,gc.endPt,gc.height,lin.pts,visualView.coordAdapter,eps, gc.percentage);
             lin.lineWidth = gc.lineWidth;
+            lin.dashLength = dashLength;
+            lin.gapLength = dashGap;
             if (gc.color)
             {
                 lin.useColor = true;
