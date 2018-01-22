@@ -117,6 +117,12 @@ NSString* const kMaplyTextOutlineSize = @"outlineSize";
 /// If outline is being used, we can control the stroke size
 NSString* const kMaplyTextOutlineColor = @"outlineColor";
 
+/// If set, we can control the dash size
+NSString* const kMaplyDashLength = @"dashlength";
+
+/// If set, we can control the gap size
+NSString* const kMaplyDashGap = @"dashgap";
+
 /// These are used for screen and regular markers.
 NSString* const kMaplyClusterGroup = @"clusterGroup";
 
