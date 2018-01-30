@@ -2009,8 +2009,8 @@ public:
             if ([inDesc[kMaplySubdivEpsilon] isKindOfClass:[NSNumber class]])
                 eps = [inDesc[kMaplySubdivEpsilon] floatValue];
             float segments = 0;
-            if gc.segments > 0
-                segments = gc.segments
+            if (gc.segments > 0)
+                segments = gc.segments;
             bool isStatic = [inDesc[kMaplySubdivType] isEqualToString:kMaplySubdivStatic];
             float dashLength = 0;
             float dashGap = 0;
