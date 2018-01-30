@@ -44,7 +44,7 @@ using namespace Eigen;
 using namespace WhirlyKit;
 
 // Sample a great circle and throw in an interpolated height at each point
-void SampleGreatCircle(MaplyCoordinate startPt,MaplyCoordinate endPt,float height,std::vector<Point3f> &pts,WhirlyKit::CoordSystemDisplayAdapter *coordAdapter,float eps, float percentage)
+void SampleGreatCircle(MaplyCoordinate startPt,MaplyCoordinate endPt,float height,std::vector<Point3f> &pts,WhirlyKit::CoordSystemDisplayAdapter *coordAdapter,float eps, float percentage, float samples)
 {
     bool isFlat = coordAdapter->isFlat();
     
@@ -59,7 +59,7 @@ void SampleGreatCircle(MaplyCoordinate startPt,MaplyCoordinate endPt,float heigh
         inPts.push_back(Point2f(startPt.x,startPt.y));
         inPts.push_back(Point2f(endPt.x,endPt.y));
         VectorRing3d tmpPts;
-        SubdivideEdgesToSurfaceGC(inPts, tmpPts, false, coordAdapter, eps, 0.0, percentage < 1.0 ? 100 : 0);
+        SubdivideEdgesToSurfaceGC(inPts, tmpPts, false, coordAdapter, eps, 0.0, samples);
         pts.resize(tmpPts.size());
         for (int ii=0;ii<tmpPts.size();ii++)
         {
@@ -1983,7 +1983,7 @@ public:
             if (isStatic)
                 SampleGreatCircleStatic(gc.startPt,gc.endPt,gc.height,lin.pts,visualView.coordAdapter,eps, 1.0);
             else
-                SampleGreatCircle(gc.startPt,gc.endPt,gc.height,lin.pts,visualView.coordAdapter,eps, 1.0);
+                SampleGreatCircle(gc.startPt,gc.endPt,gc.height,lin.pts,visualView.coordAdapter,eps, 1.0, 0);
             lin.lineWidth = gc.lineWidth;
             if (gc.color)
             {
@@ -2008,6 +2008,9 @@ public:
             float eps = 0.001;
             if ([inDesc[kMaplySubdivEpsilon] isKindOfClass:[NSNumber class]])
                 eps = [inDesc[kMaplySubdivEpsilon] floatValue];
+            float segments = 0;
+            if gc.segments > 0
+                segments = gc.segments
             bool isStatic = [inDesc[kMaplySubdivType] isEqualToString:kMaplySubdivStatic];
             float dashLength = 0;
             float dashGap = 0;
@@ -2018,7 +2021,7 @@ public:
             if (isStatic)
                 SampleGreatCircleStatic(gc.startPt,gc.endPt,gc.height,lin.pts,visualView.coordAdapter,eps, gc.percentage);
             else
-                SampleGreatCircle(gc.startPt,gc.endPt,gc.height,lin.pts,visualView.coordAdapter,eps, gc.percentage);
+                SampleGreatCircle(gc.startPt,gc.endPt,gc.height,lin.pts,visualView.coordAdapter,eps, gc.percentage, segments);
             lin.lineWidth = gc.lineWidth;
             lin.dashLength = dashLength;
             lin.gapLength = dashGap;

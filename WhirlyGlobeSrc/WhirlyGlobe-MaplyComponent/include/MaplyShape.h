@@ -177,6 +177,10 @@ typedef MaplyShapeCylinder WGShapeCylinder;
  */
 @property (nonatomic,assign) float percentage;
 
+/** @brief How many segments the line should be split into
+ */
+@property (nonatomic,assign) float segments;
+
 @end
 
 /** @brief A linear feature offset from the globe.
