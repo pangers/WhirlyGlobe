@@ -11,7 +11,7 @@ fi
 if [ -n "$2" ]; then
     arch=${2}
 else
-    arch="x86,armeabi,armeabi-v7a"
+    arch="x86,armeabi-v7a"
 fi
 
 rm -rf app/src/main/jniLibs/
