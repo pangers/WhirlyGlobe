@@ -2,8 +2,10 @@ rm Maply/Maply.aar
 
 #  Debug vs. Release
 if [ -n "$1" ]; then
+	echo "Building ${1}"
     vers=${1}
 else
+	echo "Building release"
     vers="Release"
 fi
 
