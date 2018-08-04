@@ -18,7 +18,7 @@
  *
  */
 
-
+#import "WhirlyKitLog.h"
 #import "GlobeMath.h"
 #import "FlatMath.h"
 #import "proj_api.h"
@@ -173,14 +173,13 @@ Point3f FakeGeocentricDisplayAdapter::LocalToDisplay(Point3f geoPt)
 
 Point3d FakeGeocentricDisplayAdapter::LocalToDisplay(Point3d geoPt)
 {
-    double z = sin(geoPt.y());
-    double rad = sqrt(1.0-z*z);
-    Point3d pt(rad*cos(geoPt.x()),rad*sin(geoPt.x()),z);
-    // Scale outward with the z value
+    double z = sin(geoPt.y()); // Looking from the side of the earth - how low or high above the equator
+    double rad = sqrt(1.0-z*z); //When we look from above the earth - how far from the centre of the earth (if we cut the earth on the place of Z above)
+    Point3d pt(rad*cos(geoPt.x()),rad*sin(geoPt.x()),z); // When looking from above the earth, x is the x value, y is the y value and z is the distance from the equator (negative for below, positive for above)
     if (geoPt.z() != 0.0)
-    {
-        pt *= 1.0 + geoPt.z() / EarthRadius;
-    }
+        {
+            pt *= 1.0 + geoPt.z() / EarthRadius;
+        }
     return pt;
 }
     

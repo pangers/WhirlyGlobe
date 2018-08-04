@@ -21,11 +21,8 @@
 package com.mousebird.maply;
 
 
-import java.util.HashMap;
-import java.util.List;
 import java.util.ArrayList;
-
-import android.util.Log;
+import java.util.List;
 
 /**
  * The VectorTileStyle base class for styling polygon features.
@@ -81,7 +78,7 @@ public class VectorTilePolygonStyle extends VectorTileStyle {
         }
 
 
-        ComponentObject compObj = controller.addVectors(vectors, vectorInfo, MaplyBaseController.ThreadMode.ThreadCurrent);
+        ComponentObject compObj = controller.addVectors(vectors, vectorInfo, MaplyBaseController.ThreadMode.ThreadCurrent, 1.0f);
         if (compObj != null)
             return new ComponentObject[]{compObj};
         return null;

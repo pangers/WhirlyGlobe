@@ -90,7 +90,7 @@ JNIEXPORT void JNICALL Java_com_mousebird_maply_VectorManager_dispose
 }
 
 JNIEXPORT jlong JNICALL Java_com_mousebird_maply_VectorManager_addVectors
-  (JNIEnv *env, jobject obj, jobject vecObjList, jobject vecInfoObj, jobject changeSetObj)
+  (JNIEnv *env, jobject obj, jobject vecObjList, jobject vecInfoObj, jobject changeSetObj, jfloat progress)
 {
 	try
 	{
@@ -126,7 +126,7 @@ JNIEXPORT jlong JNICALL Java_com_mousebird_maply_VectorManager_addVectors
 		}
 		env->DeleteLocalRef(liter);
 
-		SimpleIdentity vecId = wrap->vecManager->addVectors(&shapes,*vecInfo,*changeSet);
+		SimpleIdentity vecId = wrap->vecManager->addVectors(&shapes,*vecInfo,*changeSet, progress);
 
 		return vecId;
 	}

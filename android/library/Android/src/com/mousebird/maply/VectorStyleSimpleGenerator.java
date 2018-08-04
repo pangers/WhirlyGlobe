@@ -120,7 +120,7 @@ public class VectorStyleSimpleGenerator implements VectorStyleInterface
             vecInfo.setDrawPriority(drawPriority);
             vecInfo.setEnable(false);
 
-            ComponentObject compObj = controller.addVectors(vecObjs,vecInfo,threadMode);
+            ComponentObject compObj = controller.addVectors(vecObjs,vecInfo,threadMode,1.0f);
             if (compObj != null)
                 return new ComponentObject[]{compObj};
             return null;
@@ -152,7 +152,7 @@ public class VectorStyleSimpleGenerator implements VectorStyleInterface
             vecInfo.setDrawPriority(drawPriority);
             vecInfo.setEnable(false);
 
-            ComponentObject compObj = controller.addVectors(vecObjs,vecInfo,threadMode);
+            ComponentObject compObj = controller.addVectors(vecObjs,vecInfo,threadMode,1.0f);
             if (compObj != null)
                 return new ComponentObject[]{compObj};
             return null;

@@ -25,6 +25,7 @@
 #import "GridClipper.h"
 #import "SharedAttributes.h"
 #import "Platform.h"
+#import "FlatMath.h"
 
 using namespace Eigen;
 using namespace WhirlyKit;
@@ -131,18 +132,22 @@ public:
         geoCenter = inGeoCenter;
     }
     
-    void addPoints(VectorRing3d &inPts,bool closed,Dictionary *attrs)
+    void addPoints(VectorRing3d &inPts,bool closed,Dictionary *attrs,float progress, bool isLinear3d)
     {
         VectorRing pts;
         pts.reserve(pts.size());
         for (const auto &pt : inPts)
             pts.push_back(Point2f(pt.x(),pt.y()));
         
-        addPoints(pts,closed,attrs);
+        addPoints(pts,closed,attrs,progress, isLinear3d);
     }
 
-    void addPoints(VectorRing &pts,bool closed,Dictionary *attrs)
+    void addPoints(VectorRing &pts,bool closed,Dictionary *attrs,float percentage, bool isLinear3d)
     {
+        //Only take the points that we need based on the passed in percentage
+        size_t ptsToTake = (int)(pts.size() * percentage);
+        pts.resize(ptsToTake);
+
         CoordSystemDisplayAdapter *coordAdapter = scene->getCoordAdapter();
         RGBAColor ringColor = attrs->getColor(MaplyColor, vecInfo->color);
         
@@ -164,19 +169,44 @@ public:
             drawable->setLineWidth(vecInfo->lineWidth);
         }
         drawMbr.addPoints(pts);
-        
+
+        // Calculate total Length of the path in DisplayUnits
+        // Only required for Linear3d Vectors
+        float totLen = 0;
+        if(isLinear3d) {
+            for (int ii=0;ii<pts.size()-1;ii++)
+            {
+                float len = (pts[ii+1]-pts[ii]).norm();
+                totLen += len;
+            }
+        }
+
         Point3f prevPt,prevNorm,firstPt,firstNorm;
+        float newGeoZValue = 0.0;
         for (unsigned int jj=0;jj<pts.size();jj++)
         {
-            // Convert to real world coordinates and offset from the globe
+
+            //Only Linear3d vectors need an altitude
+            if (isLinear3d) {
+                // Parabolic curve
+                // Compute the altitude on the flight path that corresponds to the progress amount. We calculate altitude
+                // using an inverse parabolic function scaled to reach a max altitude of 10% of the flight distance (at the centre).
+                float pointPositionFraction = (float)jj/((float)pts.size()-1);
+                float altitudeCurve = (1- pointPositionFraction) * pointPositionFraction * 4;
+                float altitude = altitudeCurve * totLen * 0.1;
+                newGeoZValue = (altitude) * EarthRadius;
+            }
+           //  Convert to real world coordinates and offset from the globe
             Point2f &geoPt = pts[jj];
             Point2d geoCoordD(geoPt.x()+geoCenter.x(),geoPt.y()+geoCenter.y());
-            Point3d localPt = coordAdapter->getCoordSystem()->geographicToLocal(geoCoordD);
+            Point3d unalertedLocalPt = coordAdapter->getCoordSystem()->geographicToLocal(geoCoordD);
+            Point3d localPt = Point3d(unalertedLocalPt.x(), unalertedLocalPt.y(), newGeoZValue);
             Point3d norm3d = coordAdapter->normalForLocal(localPt);
             Point3f norm(norm3d.x(),norm3d.y(),norm3d.z());
             Point3d pt3d = coordAdapter->localToDisplay(localPt) - center;
+
             Point3f pt(pt3d.x(),pt3d.y(),pt3d.z());
-            
+
             // Add to drawable
             // Depending on the type, we do this differently
             if (primType == GL_POINTS)
@@ -541,7 +571,7 @@ VectorManager::~VectorManager()
     pthread_mutex_destroy(&vectorLock);
 }
 
-SimpleIdentity VectorManager::addVectors(ShapeSet *shapes, const VectorInfo &vecInfo, ChangeSet &changes)
+SimpleIdentity VectorManager::addVectors(ShapeSet *shapes, const VectorInfo &vecInfo, ChangeSet &changes, float progress)
 {
     if (shapes->empty())
         return EmptyIdentity;
@@ -630,9 +660,9 @@ SimpleIdentity VectorManager::addVectors(ShapeSet *shapes, const VectorInfo &vec
                     {
                         VectorRing newPts;
                         SubdivideEdges(ring, newPts, false, vecInfo.sample);
-                        drawBuild.addPoints(newPts,true,theAreal->getAttrDict());
+                        drawBuild.addPoints(newPts,true,theAreal->getAttrDict(),progress, false);
                     } else
-                        drawBuild.addPoints(ring,true,theAreal->getAttrDict());
+                        drawBuild.addPoints(ring,true,theAreal->getAttrDict(),progress, false);
                 }
             }
         } else {
@@ -648,9 +678,9 @@ SimpleIdentity VectorManager::addVectors(ShapeSet *shapes, const VectorInfo &vec
                     {
                         VectorRing newPts;
                         SubdivideEdges(theLinear->pts, newPts, false, vecInfo.sample);
-                        drawBuild.addPoints(newPts,false,theLinear->getAttrDict());
+                        drawBuild.addPoints(newPts,false,theLinear->getAttrDict(),progress, false);
                     } else
-                        drawBuild.addPoints(theLinear->pts,false,theLinear->getAttrDict());
+                        drawBuild.addPoints(theLinear->pts,false,theLinear->getAttrDict(),progress, false);
                 }
             } else {
                 VectorLinear3dRef theLinear3d = std::dynamic_pointer_cast<VectorLinear3d>(*it);
@@ -665,9 +695,9 @@ SimpleIdentity VectorManager::addVectors(ShapeSet *shapes, const VectorInfo &vec
                         {
                             VectorRing3d newPts;
                             SubdivideEdges(theLinear3d->pts, newPts, false, vecInfo.sample);
-                            drawBuild.addPoints(newPts,false,theLinear3d->getAttrDict());
+                            drawBuild.addPoints(newPts,false,theLinear3d->getAttrDict(),progress, true);
                         } else
-                            drawBuild.addPoints(theLinear3d->pts,false,theLinear3d->getAttrDict());
+                            drawBuild.addPoints(theLinear3d->pts,false,theLinear3d->getAttrDict(),progress, true);
                     }
                 } else {
                     VectorTrianglesRef theMesh = std::dynamic_pointer_cast<VectorTriangles>(*it);
@@ -680,7 +710,7 @@ SimpleIdentity VectorManager::addVectors(ShapeSet *shapes, const VectorInfo &vec
                             {
                                 VectorRing ring;
                                 theMesh->getTriangle(ti, ring);
-                                drawBuild.addPoints(ring,true,theMesh->getAttrDict());
+                                drawBuild.addPoints(ring,true,theMesh->getAttrDict(),progress, false);
                             }
                         }
                     } else {

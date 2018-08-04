@@ -383,8 +383,14 @@ void VectorObject::subdivideToInternal(float epsilon,WhirlyKit::CoordSystemDispl
             VectorLinear3dRef lin3d = std::dynamic_pointer_cast<VectorLinear3d>(*it);
             if (lin3d)
             {
+                VectorRing ptsAsVectorRing;
+                for (unsigned int jj=0;jj<lin3d->pts.size();jj++)
+                {
+                    ptsAsVectorRing.push_back(GeoCoord(lin3d->pts[jj].x(), lin3d->pts[jj].y()));
+                }
+
                 VectorRing3d outPts;
-                SubdivideEdgesToSurfaceGC(lin->pts, outPts, false, adapter, epsilon);
+                SubdivideEdgesToSurfaceGC(ptsAsVectorRing, outPts, false, adapter, epsilon);
                 for (unsigned int ii=0;ii<outPts.size();ii++)
                 {
                     Point3d locPt = adapter->displayToLocal(outPts[ii]);

@@ -1005,14 +1005,18 @@ public class MaplyBaseController
 		return view.currentMapScale(renderWrapper.maplyRender.frameSize.getX(),renderWrapper.maplyRender.frameSize.getY());
 	}
 
+	public ComponentObject addVector(final VectorObject vec,final VectorInfo vecInfo,ThreadMode mode) {
+		return addVector(vec, vecInfo, mode, 1.0f);
+	}
+
 	/**
 	 * Add a single VectorObject.  See addVectors() for details.
 	 */
-	public ComponentObject addVector(final VectorObject vec,final VectorInfo vecInfo,ThreadMode mode)
+	public ComponentObject addVector(final VectorObject vec,final VectorInfo vecInfo,ThreadMode mode, float progress)
 	{
 		ArrayList<VectorObject> vecObjs = new ArrayList<VectorObject>();
 		vecObjs.add(vec);
-		return addVectors(vecObjs,vecInfo,mode);
+		return addVectors(vecObjs,vecInfo,mode,progress);
 	}
 
 	/**
@@ -1137,6 +1141,10 @@ public class MaplyBaseController
 		}
 	}
 
+	public ComponentObject addVectors(final List<VectorObject> vecs,final VectorInfo vecInfo,ThreadMode mode) {
+		return addVectors(vecs, vecInfo, mode, 1.0f);
+	}
+
 	/**
 	 * Add vectors to the MaplyController to display.  Vectors are linear or areal
 	 * features with line width, filled style, color and so forth defined by the
@@ -1145,10 +1153,11 @@ public class MaplyBaseController
 	 * @param vecs A list of VectorObject's created by the user or read in from various sources.
 	 * @param vecInfo A description of how the vectors should look.
 	 * @param mode Where to execute the add.  Choose ThreadAny by default.
+     * @param progress How far to draw the vector. A number from 0-1.
 	 * @return The ComponentObject representing the vectors.  This is necessary for modifying
 	 * or deleting the vectors once created.
 	 */
-	public ComponentObject addVectors(final List<VectorObject> vecs,final VectorInfo vecInfo,ThreadMode mode)
+	public ComponentObject addVectors(final List<VectorObject> vecs,final VectorInfo vecInfo,ThreadMode mode,final float progress)
 	{
 		if (!running)
 			return null;
@@ -1164,7 +1173,7 @@ public class MaplyBaseController
 			{
 				// Vectors are simple enough to just add
 				ChangeSet changes = new ChangeSet();
-				long vecId = vecManager.addVectors(vecs, vecInfo, changes);
+				long vecId = vecManager.addVectors(vecs, vecInfo, changes, progress);
 				if (scene != null)
 					changes.process(scene);
 

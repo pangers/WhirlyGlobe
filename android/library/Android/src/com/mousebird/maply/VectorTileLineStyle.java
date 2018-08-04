@@ -21,9 +21,7 @@
 package com.mousebird.maply;
 
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Vector;
 
 /**
  * The VectorTileStyle base class for styling line features.
@@ -53,7 +51,7 @@ public class VectorTileLineStyle extends VectorTileStyle {
         if (useWideVectors)
             compObj = controller.addWideVectors(objects, wideVectorInfo, MaplyBaseController.ThreadMode.ThreadCurrent);
         else
-            compObj = controller.addVectors(objects, vectorInfo, MaplyBaseController.ThreadMode.ThreadCurrent);
+            compObj = controller.addVectors(objects, vectorInfo, MaplyBaseController.ThreadMode.ThreadCurrent, 1.0f);
         if (compObj != null)
             return new ComponentObject[]{compObj};
         return null;

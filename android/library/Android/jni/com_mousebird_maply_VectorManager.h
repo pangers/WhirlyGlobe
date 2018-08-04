@@ -13,7 +13,7 @@ extern "C" {
  * Signature: (Ljava/util/List;Lcom/mousebird/maply/VectorInfo;Lcom/mousebird/maply/ChangeSet;)J
  */
 JNIEXPORT jlong JNICALL Java_com_mousebird_maply_VectorManager_addVectors
-  (JNIEnv *, jobject, jobject, jobject, jobject);
+  (JNIEnv *, jobject, jobject, jobject, jobject, jfloat);
 
 /*
  * Class:     com_mousebird_maply_VectorManager

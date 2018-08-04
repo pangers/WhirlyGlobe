@@ -72,6 +72,11 @@ public class VectorObject implements Iterable<VectorObject>
 	 *  Add a linear feature
 	 */
 	public native void addLinear(Point2d pts[]);
+
+	/**
+	 *  Add a linear 3d feature
+	 */
+	public native void addLinear3d(Point3d pts[]);
 	
 	/**
 	 *  Add an areal feature with one external loop.

@@ -95,7 +95,7 @@ public:
     virtual ~VectorManager();
     
     /// Add an array of vectors.  The returned ID can be used for removal.
-    SimpleIdentity addVectors(ShapeSet *shapes,const VectorInfo &desc,ChangeSet &changes);
+    SimpleIdentity addVectors(ShapeSet *shapes,const VectorInfo &desc,ChangeSet &changes,float progress);
     
     /// Change the vector(s) represented by the given ID
     void changeVectors(SimpleIdentity vecID,const VectorInfo &vecInfo,ChangeSet &changes);

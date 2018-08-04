@@ -130,6 +130,37 @@ JNIEXPORT void JNICALL Java_com_mousebird_maply_VectorObject_addLinear
 	}
 }
 
+JNIEXPORT void JNICALL Java_com_mousebird_maply_VectorObject_addLinear3d
+  (JNIEnv *env, jobject obj, jobjectArray ptsObj)
+{
+	try
+	{
+		VectorObjectClassInfo *classInfo = VectorObjectClassInfo::getClassInfo();
+		VectorObject *vecObj = classInfo->getObject(env,obj);
+		if (!vecObj)
+			return;
+
+		VectorLinear3dRef lin = VectorLinear3d::createLinear();
+
+		int count = env->GetArrayLength(ptsObj);
+		if (count == 0)
+			return;
+		for (int ii=0;ii<count;ii++)
+		{
+			jobject ptObj = env->GetObjectArrayElement(ptsObj,ii);
+			Point3d *pt = Point3dClassInfo::getClassInfo()->getObject(env,ptObj);
+			lin->pts.push_back(Point3d(pt->x(),pt->y(),pt->z()));
+            env->DeleteLocalRef(ptObj);
+		}
+		lin->initGeoMbr();
+		vecObj->shapes.insert(lin);
+	}
+	catch (...)
+	{
+		__android_log_print(ANDROID_LOG_VERBOSE, "Maply", "Crash in VectorObject::addLinear3d()");
+	}
+}
+
 JNIEXPORT void JNICALL Java_com_mousebird_maply_VectorObject_addAreal___3Lcom_mousebird_maply_Point2d_2
   (JNIEnv *env, jobject obj, jobjectArray ptsObj)
 {

@@ -290,7 +290,7 @@ void SubdivideEdgesToSurfaceGC(const VectorRing &inPts,Point3dVector &outPts,boo
            dp1 = dp1.normalized() * (1.0 + surfOffset);
         outPts.push_back(dp0);
         subdivideToSurfaceRecurseGC(dp0,dp1,outPts,adapter,eps,surfOffset,minPts);
-    }    
+    }
 }
 
     

@@ -33,6 +33,14 @@ JNIEXPORT void JNICALL Java_com_mousebird_maply_VectorObject_addLinear
 
 /*
  * Class:     com_mousebird_maply_VectorObject
+ * Method:    addLinear3d
+ * Signature: ([Lcom/mousebird/maply/Point3d;)V
+ */
+JNIEXPORT void JNICALL Java_com_mousebird_maply_VectorObject_addLinear3d
+  (JNIEnv *, jobject, jobjectArray);
+
+/*
+ * Class:     com_mousebird_maply_VectorObject
  * Method:    addAreal
  * Signature: ([Lcom/mousebird/maply/Point2d;)V
  */
