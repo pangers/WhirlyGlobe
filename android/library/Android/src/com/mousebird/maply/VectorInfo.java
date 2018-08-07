@@ -44,6 +44,7 @@ public class VectorInfo extends BaseInfo
 		initialise();
 		setFilled(false);
 		setColor(1.f,1.f,1.f,1.f);
+		setDashedColor(Color.WHITE);
 		setLineWidth(1.f);
 		setDrawPriority(VectorPriorityDefault);
 	}
@@ -82,6 +83,25 @@ public class VectorInfo extends BaseInfo
 	 * @param a Alpha component.
 	 */
 	public native void setColor(float r,float g,float b,float a);
+
+	/**
+	 * Set the color of the dashed portion of a Linear 3D vector
+	 * @param color Color in Android format, including alpha
+	 */
+	public void setDashedColor(int color)
+	{
+		setDashedColor(Color.red(color)/255.f,Color.green(color)/255.f,Color.blue(color)/255.f,Color.alpha(color)/255.f);
+	}
+
+	/**
+	 * Set the dashed color used by the geometry (only for Linear 3D vectors).  Color values range from 0 to 1.0.
+	 * You must specify all four values.  Alpha controls transparency.
+	 * @param r Red component.
+	 * @param g Green component.
+	 * @param b Blue component.
+	 * @param a Alpha component.
+	 */
+	public native void setDashedColor(float r, float g, float b, float a);
 
 	/**
 	 * This is the line width for vector features.  By default this is 1.0.

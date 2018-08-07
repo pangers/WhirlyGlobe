@@ -77,6 +77,7 @@ public:
     bool                        gridSubdiv;
     TextureProjections          texProj;
     RGBAColor                   color;
+    RGBAColor                   dashedColor;
     float                       lineWidth;
     bool                        centered;
     bool                        vecCenterSet;

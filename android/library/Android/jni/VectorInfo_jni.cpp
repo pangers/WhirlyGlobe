@@ -174,6 +174,23 @@ JNIEXPORT void JNICALL Java_com_mousebird_maply_VectorInfo_setColor
 	}
 }
 
+JNIEXPORT void JNICALL Java_com_mousebird_maply_VectorInfo_setDashedColor
+  (JNIEnv *env, jobject obj, jfloat r, jfloat g, jfloat b, jfloat a)
+{
+	try
+	{
+		VectorInfoClassInfo *classInfo = VectorInfoClassInfo::getClassInfo();
+		VectorInfo *vecInfo = classInfo->getObject(env,obj);
+		if (!vecInfo)
+			return;
+		vecInfo->dashedColor = RGBAColor(r*255.0,g*255.0,b*255.0,a*255.0);
+	}
+	catch (...)
+	{
+		__android_log_print(ANDROID_LOG_VERBOSE, "Maply", "Crash in VectorInfo::setDashedColor()");
+	}
+}
+
 JNIEXPORT void JNICALL Java_com_mousebird_maply_VectorInfo_setLineWidth
   (JNIEnv *env, jobject obj, jfloat val)
 {

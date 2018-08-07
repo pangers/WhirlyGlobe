@@ -81,12 +81,6 @@ public class StamenRemoteTestCase extends MaplyTestCase {
 
 
 
-        VectorInfo vectorInfo = new VectorInfo();
-        vectorInfo.setColor(Color.RED);
-        vectorInfo.setLineWidth(4f);
-
-
-
 //        VectorObject vectorObject = new VectorObject();
 //		Point3d[] pointsArray = {new Point3d(Point2d.FromDegrees(151.177216, -33.9461098), 0.0), new Point3d(Point2d.FromDegrees(116.092591, -1.870512), 0.0)};
         Point3d[] pointsArray = {new Point3d(Point2d.FromDegrees(151.177216, -33.9461098), 0.0), new Point3d(Point2d.FromDegrees(114.1095, 22.3964), 0.0)};
@@ -121,6 +115,7 @@ public class StamenRemoteTestCase extends MaplyTestCase {
         VectorInfo vectorInfo = new VectorInfo();
         vectorInfo.setColor(Color.RED);
         vectorInfo.setLineWidth(4f);
+        vectorInfo.setDashedColor(Color.WHITE);
 
 
         vectorObject.addLinear3d(point3ds);

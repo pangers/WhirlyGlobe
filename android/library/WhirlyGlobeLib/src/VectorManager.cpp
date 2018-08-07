@@ -144,12 +144,12 @@ public:
 
     void addPoints(VectorRing &pts,bool closed,Dictionary *attrs,float percentage, bool isLinear3d)
     {
-        //Only take the points that we need based on the passed in percentage
-        size_t ptsToTake = (int)(pts.size() * percentage);
-        //pts.resize(ptsToTake);
+        //Determine the number of points along the solid line portion
+        size_t numberOfSolidLinePoints = (int)(pts.size() * percentage);
 
         CoordSystemDisplayAdapter *coordAdapter = scene->getCoordAdapter();
         RGBAColor ringColor = attrs->getColor(MaplyColor, vecInfo->color);
+        RGBAColor dashedColor = attrs->getColor(MaplyColor, vecInfo->dashedColor);
         
         // Decide if we'll appending to an existing drawable or
         //  create a new one
@@ -213,18 +213,33 @@ public:
         float newGeoZValue = 0.0;
         for (unsigned int jj=0;jj<pts.size();jj++)
         {
+            // When we hit the dashed portion of the line, set the dashed line color
+            if (isLinear3d && (jj == numberOfSolidLinePoints)) {
+                if (drawable) {
+                    flush();
+                 }
 
+                 drawable = new BasicDrawable("Vector Layer");
+                 drawMbr.reset();
+                 drawable->setType(primType);
+                 vecInfo->setupBasicDrawable(drawable);
+                 // Adjust according to the vector info
+                 drawable->setColor(dashedColor);
+                 drawable->setLineWidth(vecInfo->lineWidth);
+            }
+
+            float pointPositionFraction = (float)jj/((float)pts.size()-1);
             //Only Linear3d vectors need an altitude
             if (isLinear3d) {
                 // Parabolic curve
                 // Compute the altitude on the flight path that corresponds to the progress amount. We calculate altitude
                 // using an inverse parabolic function scaled to reach a max altitude of 10% of the flight distance (at the centre).
-                float pointPositionFraction = (float)jj/((float)pts.size()-1);
                 float altitudeCurve = (1 - pointPositionFraction) * pointPositionFraction * 4;
                 float altitude = altitudeCurve * totLen * maxHeightPercentage;
                 newGeoZValue = (altitude) * EarthRadius;
             }
-           //  Convert to real world coordinates and offset from the globe
+
+            //  Convert to real world coordinates and offset from the globe
             Point2f &geoPt = pts[jj];
             Point2d geoCoordD(geoPt.x()+geoCenter.x(),geoPt.y()+geoCenter.y());
             Point3d unalertedLocalPt = coordAdapter->getCoordSystem()->geographicToLocal(geoCoordD);
@@ -244,7 +259,7 @@ public:
                    drawable->addColor(ringColor);
                 drawable->addNormal(norm);
             } else {
-                bool shouldDrawPoints = !(jj >= ptsToTake && ((jj%numberOfPointsInDashedLine >=0) && (jj%numberOfPointsInDashedLine < numberOfPointsInDashedLine/2)));
+                bool shouldDrawPoints = !(jj >= numberOfSolidLinePoints && ((jj%numberOfPointsInDashedLine >=0) && (jj%numberOfPointsInDashedLine < numberOfPointsInDashedLine/2)));
                 if ((isLinear3d && jj > 0 && shouldDrawPoints) || (!isLinear3d && jj > 0))
                 {
                     drawable->addPoint(prevPt);
