@@ -146,7 +146,7 @@ public:
     {
         //Only take the points that we need based on the passed in percentage
         size_t ptsToTake = (int)(pts.size() * percentage);
-        pts.resize(ptsToTake);
+        //pts.resize(ptsToTake);
 
         CoordSystemDisplayAdapter *coordAdapter = scene->getCoordAdapter();
         RGBAColor ringColor = attrs->getColor(MaplyColor, vecInfo->color);
@@ -180,6 +180,15 @@ public:
                 totLen += len;
             }
         }
+
+        //Determining the number of points to use in a single dash
+        float dashLineLengthAsEarthRadiusUnits = 0.04;
+        if (totLen <= dashLineLengthAsEarthRadiusUnits) {
+            dashLineLengthAsEarthRadiusUnits = 0.01;
+        }
+
+        float percentageOfDashedLineLengthToTotalLength = dashLineLengthAsEarthRadiusUnits / totLen;
+        int numberOfPointsInDashedLine = percentageOfDashedLineLengthToTotalLength * pts.size();
 
         Point3f prevPt,prevNorm,firstPt,firstNorm;
         float newGeoZValue = 0.0;
@@ -216,7 +225,8 @@ public:
                    drawable->addColor(ringColor);
                 drawable->addNormal(norm);
             } else {
-                if (jj > 0)
+             bool shouldDrawPoints = !(jj >= ptsToTake && ((jj%numberOfPointsInDashedLine >=0) && (jj%numberOfPointsInDashedLine < numberOfPointsInDashedLine/2)));
+                if (jj > 0 && shouldDrawPoints)
                 {
                     drawable->addPoint(prevPt);
                     drawable->addPoint(pt);

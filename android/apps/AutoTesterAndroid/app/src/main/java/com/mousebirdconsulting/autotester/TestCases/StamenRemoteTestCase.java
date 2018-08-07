@@ -3,6 +3,7 @@ package com.mousebirdconsulting.autotester.TestCases;
 import android.app.Activity;
 import android.graphics.Color;
 import android.os.Handler;
+import android.util.Log;
 
 import com.mousebird.maply.GlobeController;
 import com.mousebird.maply.MapController;
@@ -78,25 +79,51 @@ public class StamenRemoteTestCase extends MaplyTestCase {
         globeVC.animatePositionGeo(-3.6704803, 40.5023056, 0.7, 1.0);
 //		globeVC.setZoomLimits(0.0,1.0);
 
+
+
         VectorInfo vectorInfo = new VectorInfo();
         vectorInfo.setColor(Color.RED);
-        vectorInfo.setLineWidth(30f);
+        vectorInfo.setLineWidth(4f);
+
+
 
 //        VectorObject vectorObject = new VectorObject();
 //		Point3d[] pointsArray = {new Point3d(Point2d.FromDegrees(151.177216, -33.9461098), 0.0), new Point3d(Point2d.FromDegrees(116.092591, -1.870512), 0.0)};
         Point3d[] pointsArray = {new Point3d(Point2d.FromDegrees(151.177216, -33.9461098), 0.0), new Point3d(Point2d.FromDegrees(114.1095, 22.3964), 0.0)};
-        Point3d[] pointsArray2 = {new Point3d(Point2d.FromDegrees(151.177216, -33.9461098), 0.0), new Point3d(Point2d.FromDegrees(114.1095, 22.3964), 0.0)};
-        Point3d[] pointsArray3 = {new Point3d(Point2d.FromDegrees(151.177216, -33.9461098), 0.0), new Point3d(Point2d.FromDegrees(114.1095, 22.3964), 0.0)};
+        Point3d[] pointsArray3 = {new Point3d(Point2d.FromDegrees(151.177216, -33.9461098), 0.0), new Point3d(Point2d.FromDegrees( 103.8198, 1.3521), 0.0)};
+        Point3d[] pointsArray2 = {new Point3d(Point2d.FromDegrees(151.177216, -33.9461098), 0.0), new Point3d(Point2d.FromDegrees(149.1300,-35.2809 ), 0.0)};
 //		vectorObject.addLinear(pointsArray);
+//
+//        for (int i = 0; i < 100; i++) {
+//            VectorObject vectorObject = new VectorObject();
+//            vectorObject.addLinear3d(pointsArray);
+//        vectorObject.subdivideToGlobeGreatCircle(0.0000001);
+//        globeVC.addVector(vectorObject, vectorInfo, MaplyBaseController.ThreadMode.ThreadAny, 0.9f);
+//        }
 
-        for (int i = 0; i < 100; i++) {
-            VectorObject vectorObject = new VectorObject();
-            vectorObject.addLinear3d(pointsArray);
-        vectorObject.subdivideToGlobeGreatCircle(0.0000001);
-        globeVC.addVector(vectorObject, vectorInfo, MaplyBaseController.ThreadMode.ThreadAny, 0.9f);
-        }
+//        VectorObject vectorObject = new VectorObject();
+//        vectorObject.addLinear3d(pointsArray);
+////        vectorObject.subdivideToGlobeGreatCircle(0.001);
+//        vectorObject.subdivideToGlobeGreatCircle(0.0000001);
+
+        createVectorObject(globeVC, pointsArray);
+        createVectorObject(globeVC, pointsArray2);
+        createVectorObject(globeVC, pointsArray3);
+//        globeVC.addVector(vectorObject, vectorInfo, MaplyBaseController.ThreadMode.ThreadAny, 0.5f);
 
         return true;
+    }
+    private void createVectorObject(GlobeController globeVC, Point3d[] point3ds) {
+        VectorObject vectorObject = new VectorObject();
+
+        VectorInfo vectorInfo = new VectorInfo();
+        vectorInfo.setColor(Color.RED);
+        vectorInfo.setLineWidth(4f);
+
+
+        vectorObject.addLinear3d(point3ds);
+        vectorObject.subdivideToGlobeGreatCircle(0.0000001);
+        globeVC.addVector(vectorObject, vectorInfo, MaplyBaseController.ThreadMode.ThreadAny, 0.5f);
     }
 
     @Override
