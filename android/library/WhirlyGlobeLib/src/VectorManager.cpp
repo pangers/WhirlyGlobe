@@ -181,14 +181,33 @@ public:
             }
         }
 
-        //Determining the number of points to use in a single dash
-        float dashLineLengthAsEarthRadiusUnits = 0.04;
-        if (totLen <= dashLineLengthAsEarthRadiusUnits) {
-            dashLineLengthAsEarthRadiusUnits = 0.01;
+
+        int numberOfPointsInDashedLine = 0;
+        if (isLinear3d) {
+            //Determining the number of points to use in a single dash
+            float dashLineLengthAsDisplayUnits = 0.04;
+            // If the dashed portion of the path is smaller than a {dashLengthMultiplier} dash lengths (arbitrary number),
+            // reduce the single dash length
+            float dashPathLength = (totLen * (1 - percentage));
+            float dashLengthMultiplier = 6;
+            if (dashPathLength <= dashLineLengthAsDisplayUnits * dashLengthMultiplier) {
+                dashLineLengthAsDisplayUnits = dashPathLength / dashLengthMultiplier;
+            }
+            float percentageOfDashedLineLengthToTotalLength = dashLineLengthAsDisplayUnits / totLen;
+            numberOfPointsInDashedLine = percentageOfDashedLineLengthToTotalLength * pts.size();
         }
 
-        float percentageOfDashedLineLengthToTotalLength = dashLineLengthAsEarthRadiusUnits / totLen;
-        int numberOfPointsInDashedLine = percentageOfDashedLineLengthToTotalLength * pts.size();
+
+        // Determine the percentage of total distance to use as the max height of parabolic curve
+        // For Linear 3d vectors
+        float maxHeightPercentage = 0.1; // Start with 10%
+        if (isLinear3d) {
+            float maxHeightDisplayUnits = totLen * maxHeightPercentage;
+            // We want a maximum height of 0.1 display units (arbitrary number) above the earth's surface
+            if (maxHeightDisplayUnits > 0.1) {
+                maxHeightPercentage = 0.1 / totLen;
+            }
+        }
 
         Point3f prevPt,prevNorm,firstPt,firstNorm;
         float newGeoZValue = 0.0;
@@ -201,8 +220,8 @@ public:
                 // Compute the altitude on the flight path that corresponds to the progress amount. We calculate altitude
                 // using an inverse parabolic function scaled to reach a max altitude of 10% of the flight distance (at the centre).
                 float pointPositionFraction = (float)jj/((float)pts.size()-1);
-                float altitudeCurve = (1- pointPositionFraction) * pointPositionFraction * 4;
-                float altitude = altitudeCurve * totLen * 0.1;
+                float altitudeCurve = (1 - pointPositionFraction) * pointPositionFraction * 4;
+                float altitude = altitudeCurve * totLen * maxHeightPercentage;
                 newGeoZValue = (altitude) * EarthRadius;
             }
            //  Convert to real world coordinates and offset from the globe
@@ -225,8 +244,8 @@ public:
                    drawable->addColor(ringColor);
                 drawable->addNormal(norm);
             } else {
-             bool shouldDrawPoints = !(jj >= ptsToTake && ((jj%numberOfPointsInDashedLine >=0) && (jj%numberOfPointsInDashedLine < numberOfPointsInDashedLine/2)));
-                if (jj > 0 && shouldDrawPoints)
+                bool shouldDrawPoints = !(jj >= ptsToTake && ((jj%numberOfPointsInDashedLine >=0) && (jj%numberOfPointsInDashedLine < numberOfPointsInDashedLine/2)));
+                if ((isLinear3d && jj > 0 && shouldDrawPoints) || (!isLinear3d && jj > 0))
                 {
                     drawable->addPoint(prevPt);
                     drawable->addPoint(pt);

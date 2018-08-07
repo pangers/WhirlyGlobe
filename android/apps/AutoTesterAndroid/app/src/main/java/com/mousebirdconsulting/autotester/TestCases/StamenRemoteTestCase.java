@@ -75,7 +75,7 @@ public class StamenRemoteTestCase extends MaplyTestCase {
     @Override
     public boolean setUpWithGlobe(GlobeController globeVC) throws Exception {
         globeVC.addLayer(setupImageLayer(ConfigOptions.TestType.GlobeTest, globeVC));
-        globeVC.setZoomLimits(0.033, 1.03);
+//        globeVC.setZoomLimits(0.033, 1.03);
         globeVC.animatePositionGeo(-3.6704803, 40.5023056, 0.7, 1.0);
 //		globeVC.setZoomLimits(0.0,1.0);
 
@@ -91,7 +91,8 @@ public class StamenRemoteTestCase extends MaplyTestCase {
 //		Point3d[] pointsArray = {new Point3d(Point2d.FromDegrees(151.177216, -33.9461098), 0.0), new Point3d(Point2d.FromDegrees(116.092591, -1.870512), 0.0)};
         Point3d[] pointsArray = {new Point3d(Point2d.FromDegrees(151.177216, -33.9461098), 0.0), new Point3d(Point2d.FromDegrees(114.1095, 22.3964), 0.0)};
         Point3d[] pointsArray3 = {new Point3d(Point2d.FromDegrees(151.177216, -33.9461098), 0.0), new Point3d(Point2d.FromDegrees( 103.8198, 1.3521), 0.0)};
-        Point3d[] pointsArray2 = {new Point3d(Point2d.FromDegrees(151.177216, -33.9461098), 0.0), new Point3d(Point2d.FromDegrees(149.1300,-35.2809 ), 0.0)};
+        Point3d[] pointsArray2 = {new Point3d(Point2d.FromDegrees(151.177216, -33.9461098), 0.0), new Point3d(Point2d.FromDegrees(-149.4937, 64.2008), 0.0)};
+        Point3d[] pointsArray4 = {new Point3d(Point2d.FromDegrees(151.177216, -33.9461098), 0.0), new Point3d(Point2d.FromDegrees(149.1300, -35.2809), 0.0)};
 //		vectorObject.addLinear(pointsArray);
 //
 //        for (int i = 0; i < 100; i++) {
@@ -109,6 +110,7 @@ public class StamenRemoteTestCase extends MaplyTestCase {
         createVectorObject(globeVC, pointsArray);
         createVectorObject(globeVC, pointsArray2);
         createVectorObject(globeVC, pointsArray3);
+        createVectorObject(globeVC, pointsArray4);
 //        globeVC.addVector(vectorObject, vectorInfo, MaplyBaseController.ThreadMode.ThreadAny, 0.5f);
 
         return true;
